@@ -20,6 +20,7 @@ def create_app():
     bcrypt.init_app(app)
 
     from app.models import User
+    login.login_view = 'main.login'
 
     @login.user_loader
     def load_user(id):
