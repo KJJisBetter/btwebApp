@@ -101,3 +101,5 @@ dmypy.json
 
 # Others
 *.stackdump
+.vercel
+vercel.json

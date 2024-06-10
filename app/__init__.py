@@ -19,6 +19,12 @@ def create_app():
     login.init_app(app)
     bcrypt.init_app(app)
 
+    from app.models import User
+
+    @login.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
+
     from .routes import main as main_blueprint
     app.register_blueprint(main_blueprint)  # Import the routes module
     from app import models

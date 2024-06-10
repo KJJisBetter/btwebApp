@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to Budget Tracking App</h1>
+    <p class="lead">Your personal finance manager to track expenses and manage your budget effectively.</p>
+    <hr class="my-4">
+    <p>Start managing your budget today with our easy-to-use app.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('main.register') }}" role="button">Get Started</a>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Track Your Expenses</h2>
+            <p>Log your daily expenses and keep track of where your money is going.</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Set Budget Goals</h2>
+            <p>Set your budget goals and monitor your progress to stay on track.</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Generate Reports</h2>
+            <p>Generate detailed reports to get insights into your spending habits.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
