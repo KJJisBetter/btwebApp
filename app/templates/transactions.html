@@ -2,49 +2,41 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Transactions</h1>
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.amount.label(class="form-label") }}
-            {{ form.amount(class="form-control", type="number", step="0.01") }}
-        </div>
-        <div class="mb-3">
-            {{ form.category.label(class="form-label") }}
-            {{ form.category(class="form-control", id="category-select") }}
-        </div>
-        <div class="mb-3" id="custom-category-div" style="display: none;">
-            {{ form.custom_category(class="form-control") }}
-        </div>
-        <div class="mb-3">
-            {{ form.date.label(class="form-label") }}
-            {{ form.date(class="form-control datetimepicker", id="datetimepicker") }}
-        </div>
-        <div class="mb-3">
-            {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control") }}
-        </div>
-        <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
-    <hr>
-    <h2>Transaction History</h2>
-    <ul class="list-group">
-        {% for transaction in transactions %}
-            <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <strong>{{ transaction.date }}</strong> - {{ transaction.description }}: ${{ transaction.amount }} ({{ transaction.category }})
-                    </div>
-                    <div>
-                        <a href="{{ url_for('main.update_transaction', id=transaction.id) }}" class="btn btn-warning btn-sm">Update</a>
-                        <a href="{{ url_for('main.delete_transaction', id=transaction.id) }}" class="btn btn-danger btn-sm">Delete</a>
-                    </div>
+    <h1 class="text-primary">Transactions</h1>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.amount.label(class="form-label") }}
+                    {{ form.amount(class="form-control", type="number", step="0.01") }}
                 </div>
-            </li>
-        {% endfor %}
-    </ul>
+                <div class="mb-3">
+                    {{ form.category.label(class="form-label") }}
+                    {{ form.category(class="form-control", id="category-select") }}
+                </div>
+                <div class="mb-3" id="custom-category-div" style="display: none;">
+                    {{ form.custom_category.label(class="form-label") }}
+                    {{ form.custom_category(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.date.label(class="form-label") }}
+                    {{ form.date(class="form-control datetimepicker", id="datetime-input") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="text-center">
+        <a href="{{ url_for('main.history') }}" class="btn btn-secondary">View Transaction History</a>
+    </div>
 </div>
 {% endblock %}
 

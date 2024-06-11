@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
+from flask import Blueprint, render_template, flash, redirect, url_for, request, abort, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from app import db
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, TransactionForm, DeleteTransactionForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, TransactionForm, DeleteTransactionForm, FilterSortForm
 from app.models import User, Transaction
+from sqlalchemy import func
+from datetime import datetime, timedelta
 
 
 main = Blueprint('main', __name__)
@@ -59,8 +61,8 @@ def logout():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', name=current_user.username, title='Dashboard', transactions=transactions)
+    last_10_transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.date.desc()).limit(10).all()
+    return render_template('dashboard.html', transactions=last_10_transactions)
 
 
 # profile route
@@ -85,12 +87,12 @@ def profile():
     
     return render_template('profile.html', title='Profile', form=form)
 
-
+# transactios route
 @main.route('/transactions', methods=['GET', 'POST'])
 @login_required
 def transactions():
     form = TransactionForm()
-
+    
     if form.validate_on_submit():
         trasaction = Transaction(
             amount=form.amount.data,
@@ -160,9 +162,94 @@ def delete_transaction(id):
     
     return render_template('delete_transaction.html', title='Delete Transaction', form=form)
 
+# !kinda got it right. but it still loses the filter sometimes
+#TODO: fix the filter and pagination to work together
+@main.route('/history', methods=['GET', 'POST'])
+@login_required
+def history():
+    form = FilterSortForm()
+    query = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.date.desc())
+
+    if form.validate_on_submit():
+        if form.start_date.data:
+            query = query.filter(Transaction.date >= form.start_date.data)
+        if form.end_date.data:
+            query = query.filter(Transaction.date <= form.end_date.data)
+        if form.sort.data:
+            if form.sort.data == 'amount':
+                query = query.order_by(Transaction.amount.desc())
+            elif form.sort.data == 'date':
+                query = query.order_by(Transaction.date.desc())
+            elif form.sort.data == 'category':
+                query = query.order_by(Transaction.category.desc())
+        
+        
+        page = request.args.get('page', 1, type=int)
+        transactions_pagination = query.paginate(page=page, per_page=10)
+        transactions = transactions_pagination.items
+
+        return render_template('history.html', transactions=transactions, pagination=transactions_pagination, form=form, filter_applied=True)
+
+    
+    else:
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        sort = request.args.get('sort')
+
+        if start_date:
+            query = query.filter(Transaction.date >= start_date)
+        if end_date:
+            query = query.filter(Transaction.date <= end_date)
+        if sort:
+            if sort == 'amount':
+                query = query.order_by(Transaction.amount.desc())
+            elif sort == 'date':
+                query = query.order_by(Transaction.date.desc())
+            elif sort == 'category':
+                query = query.order_by(Transaction.category.desc())
+
+        page = request.args.get('page', 1, type=int)
+        transactions_pagination = query.paginate(page=page, per_page=10)
+        transactions = transactions_pagination.items
+
+        return render_template('history.html', transactions=transactions, pagination=transactions_pagination, form=form, filter_applied=False, start_date=start_date, end_date=end_date, sort=sort)
 
 
 
+
+#api route
+@main.route('/api/transactions/data')
+@login_required
+def transactions_data():
+    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
+    data = {
+        "labels": [transaction.date.strftime('%Y-%m-%d') for transaction in transactions],
+        "data": [transaction.amount for transaction in transactions]
+    }
+    return jsonify(data)
+
+@main.route('/api/daily_spending')
+@login_required
+def daily_spending():
+    # Calculate the date one month ago from today
+    one_month_ago = datetime.today() - timedelta(days=30)
+    
+    daily_spending_data = (
+        db.session.query(
+            func.date(Transaction.date).label('date'),
+            func.sum(Transaction.amount).label('total')
+        )
+        .filter(Transaction.user_id == current_user.id, Transaction.date >= one_month_ago)
+        .group_by(func.date(Transaction.date))
+        .order_by(func.date(Transaction.date))
+        .all()
+    )
+    
+    data = {
+        "labels": [entry.date.strftime('%Y-%m-%d') for entry in daily_spending_data],
+        "data": [entry.total for entry in daily_spending_data]
+    }
+    return jsonify(data)
 
 
 # about route
