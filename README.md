@@ -5,7 +5,7 @@ Hey there! Welcome to my Budget Tracker Web App, a project created for Harvard's
 
 ## Why Build This?
 
-I decided to build my own backend for this project because Supabase, while powerful, was a bit challenging to integrate with Python. This gave me the perfect opportunity to deepen my understanding of Flask and SQLAlchemy. Plus, the entire app runs smoothly on my Docker server, helping me learn more about containarization.
+I decided to build my own backend for this project because Supabase, while powerful, was a bit challenging to integrate with Python. This gave me the perfect opportunity to deepen my understanding of Flask and SQLAlchemy. Plus, the entire app runs smoothly on my Docker server and exposed with traefik on my own doamin with full tls and valid ssl certificates using Let's Encrypt and Cloudflare, helping me learn more about containarization and certificates.
 
 Here is my failed attemp to integrate supabase baas to this project: https://github.com/KJJisBetter/budget-webapp. Also my first project attempt for CS50x, a machine monitoring but in c: https://github.com/KJJisBetter/monitoring.
 
