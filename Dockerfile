@@ -16,4 +16,4 @@ EXPOSE 5000
 ENV flask_app=run.py
 
 # Run app.py when the container launches
-CMD ["sh", "-c", "flask db upgrade && flask run --host=0.0.0.0"]
+CMD ["gunicorn", "-w", "3", "-b", "0.0.0.0:5000", "run:app"]
