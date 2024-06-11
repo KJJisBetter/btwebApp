@@ -119,6 +119,7 @@ def transactions():
 def update_transaction(id):
     transaction = Transaction.query.get_or_404(id)
     form = TransactionForm()
+    category = transaction.category
 
     if form.validate_on_submit():
         if category == 'Other':
