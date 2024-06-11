@@ -3,7 +3,7 @@ services:
   web:
     container_name: btwebAPP
     build: .
-    command: flask run --host=0.0.0.0
+    command: gunicorn -w 3 -b 0.0.0.0:5000 run:app
     volumes:
       - .:/app
     ports:
