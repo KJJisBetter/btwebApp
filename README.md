@@ -1,5 +1,5 @@
 # Budget Tracking Web App
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://youtu.be/d03XaTtbjgY
 #### Description:
 Hey there! Welcome to my Budget Tracker Web App, a project created for Harvard's CS50x course.
 
