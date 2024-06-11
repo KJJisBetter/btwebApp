@@ -1,0 +1,67 @@
+/* Navbar Styling */
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar-brand, .nav-link {
+    color: #fff !important;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 1rem 0;
+}
+
+footer a {
+    color: #fff !important;
+}
+
+/* Custom Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* Form and Container Styling */
+.container {
+    margin-top: 20px;
+}
+
+.card {
+    margin-top: 20px;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Custom Flash Messages */
+.alert {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Ensure the footer stays at the bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+
+canvas {
+    width: 100% !important;
+    height: 400px !important; /* Adjust this value as needed */
+}

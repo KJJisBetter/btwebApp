@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-primary">Transaction History</h1>
+    
+    <!-- Filter and Sort Form -->
+    <form method="POST" action="{{ url_for('main.history') }}">
+        {{ form.hidden_tag() }}
+        <div class="row mb-3">
+            <div class="col-md-4">
+                {{ form.start_date.label(class="form-label") }}
+                {{ form.start_date(class="form-control", type="date") }}
+            </div>
+            <div class="col-md-4">
+                {{ form.end_date.label(class="form-label") }}
+                {{ form.end_date(class="form-control", type="date") }}
+            </div>
+            <div class="col-md-4">
+                {{ form.sort.label(class="form-label") }}
+                {{ form.sort(class="form-select") }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Apply Filters</button>
+        <a href="{{ url_for('main.history') }}" class="btn btn-secondary mb-3">Remove Filters</a>
+    </form>
+
+    <!-- Transaction List -->
+    <ul class="list-group">
+        {% for transaction in transactions %}
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong>{{ transaction.date }}</strong> - {{ transaction.description }}: ${{ transaction.amount }} ({{ transaction.category }})
+                    </div>
+                    <div>
+                        <a href="{{ url_for('main.update_transaction', id=transaction.id) }}" class="btn btn-warning btn-sm">Update</a>
+                        <a href="{{ url_for('main.delete_transaction', id=transaction.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-3">
+            {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.history', page=pagination.prev_num, start_date=form.start_date.data, end_date=form.end_date.data, sort=form.sort.data) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% for page_num in pagination.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                        <li class="page-item active"><a class="page-link">{{ page_num }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('main.history', page=page_num, start_date=form.start_date.data, end_date=form.end_date.data, sort=form.sort.data) }}">{{ page_num }}</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.history', page=pagination.next_num, start_date=form.start_date.data, end_date=form.end_date.data, sort=form.sort.data) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
