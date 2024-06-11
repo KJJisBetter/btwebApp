@@ -218,16 +218,6 @@ def history():
 
 
 #api route
-@main.route('/api/transactions/data')
-@login_required
-def transactions_data():
-    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    data = {
-        "labels": [transaction.date.strftime('%Y-%m-%d') for transaction in transactions],
-        "data": [transaction.amount for transaction in transactions]
-    }
-    return jsonify(data)
-
 @main.route('/api/daily_spending')
 @login_required
 def daily_spending():
